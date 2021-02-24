@@ -1,7 +1,6 @@
 import datetime
 import time
 import numpy
-import telebot
 
 rounding_error_limit = 0.0001
 cycle_accept_criteria = 5
@@ -32,17 +31,39 @@ def is_equals_arrays(first_array, second_array):
     return True
 
 
+calculation_map = {}
+
+
+def add_to_calc_map(key, value, map=calculation_map):
+    map.update({key: value})
+
+
 def get_cycle_values(generator, start_x, r):
+
     current_x = start_x
+    add_to_calc_map("start_x", current_x)
+    add_to_calc_map("r", r)
+
     cycle_list = [current_x]
 
+    iteration_counter = 0
     while True:
+        add_to_calc_map("iteration_counter", iteration_counter)
+        add_to_calc_map("current_x", current_x)
         next_x = get_next_x(generator, current_x, r)
         cycle_list.append(next_x)
+        add_to_calc_map("cycle_list", cycle_list)
         for i in range(1, len(cycle_list)//cycle_accept_criteria):
+            add_to_calc_map("tfs", get_human_time_from_start(start_time))
+            # print("i: %s - tfs: %s - start_x: %s - r:%s - current: %s" % (
+            # calculation_map["iteration_counter"], calculation_map["tfs"], calculation_map["start_x"],
+            # calculation_map["r"], calculation_map["current_x"]))
+
+            print(calculation_map)
+
             cycle = cycle_list[-i:]
             place_to_cycle_search = cycle_list[-cycle_accept_criteria*i:]
-
+            add_to_calc_map("cycle", cycle)
             cycle_attempt_count = 0
             for j in range(cycle_accept_criteria):
                 first_cycle_attempt = place_to_cycle_search[:i]
@@ -56,9 +77,9 @@ def get_cycle_values(generator, start_x, r):
             return cycle_list
 
         current_x = next_x
+        iteration_counter += 1
 
-        if len(cycle_list) % 100 == 0:
-            print("%s - %s" % (str(len(cycle_list)), str(next_x)))
+
 
 
 def get_human_time_from_start(start_time):
@@ -70,7 +91,8 @@ def get_human_time_from_start(start_time):
 if __name__ == '__main__':
     start_time = time.time_ns()
     for r in numpy.arange(2.6, 3.8, 0.01):
-        print("Time from start: %s - %s" % (get_human_time_from_start(start_time), get_cycle_values(basic_generator, 0.4, r)))
+        get_cycle_values(basic_generator, 0.4, r)
+
     print("That's all")
 
 
