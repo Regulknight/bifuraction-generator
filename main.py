@@ -1,4 +1,5 @@
 import datetime
+import json
 import time
 import numpy
 
@@ -55,11 +56,9 @@ def get_cycle_values(generator, start_x, r):
         add_to_calc_map("cycle_list", cycle_list)
         for i in range(1, len(cycle_list)//cycle_accept_criteria):
             add_to_calc_map("tfs", get_human_time_from_start(start_time))
-            # print("i: %s - tfs: %s - start_x: %s - r:%s - current: %s" % (
-            # calculation_map["iteration_counter"], calculation_map["tfs"], calculation_map["start_x"],
-            # calculation_map["r"], calculation_map["current_x"]))
 
-            print(calculation_map)
+            json_object = json.dumps(calculation_map, indent=4)
+            print(json_object)
 
             cycle = cycle_list[-i:]
             place_to_cycle_search = cycle_list[-cycle_accept_criteria*i:]
@@ -78,8 +77,6 @@ def get_cycle_values(generator, start_x, r):
 
         current_x = next_x
         iteration_counter += 1
-
-
 
 
 def get_human_time_from_start(start_time):
