@@ -1,3 +1,8 @@
+import datetime
+import time
+import numpy
+import telebot
+
 rounding_error_limit = 0.0001
 cycle_accept_criteria = 5
 cycle_maximum_size = 10000
@@ -31,10 +36,8 @@ def get_cycle_values(generator, start_x, r):
     current_x = start_x
     cycle_list = [current_x]
 
-    cycle_accepts_flag = False
-    while not cycle_accepts_flag:
+    while True:
         next_x = get_next_x(generator, current_x, r)
-        print(next_x)
         cycle_list.append(next_x)
         for i in range(1, len(cycle_list)//cycle_accept_criteria):
             cycle = cycle_list[-i:]
@@ -54,8 +57,23 @@ def get_cycle_values(generator, start_x, r):
 
         current_x = next_x
 
-    return cycle_list
+        if len(cycle_list) % 100 == 0:
+            print("%s - %s" % (str(len(cycle_list)), str(next_x)))
+
+
+def get_human_time_from_start(start_time):
+    time_from_start = time.time_ns() - start_time
+    dt = datetime.datetime.fromtimestamp(time_from_start/1e9)
+    return '{}{:03.0f}'.format(dt.strftime('%Y-%m-%dT%H:%M:%S.%f'), time_from_start % 1e3)
 
 
 if __name__ == '__main__':
-    print(get_cycle_values(basic_generator, 0.4, 3.8))
+    start_time = time.time_ns()
+    for r in numpy.arange(2.6, 3.8, 0.01):
+        print("Time from start: %s - %s" % (get_human_time_from_start(start_time), get_cycle_values(basic_generator, 0.4, r)))
+    print("That's all")
+
+
+
+
+
