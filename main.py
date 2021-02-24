@@ -57,7 +57,7 @@ def get_cycle_values(generator, start_x, r):
         for i in range(1, len(cycle_list)//cycle_accept_criteria):
             add_to_calc_map("tfs", get_human_time_from_start(start_time))
 
-            json_object = json.dumps(calculation_map, indent=4)
+            json_object = json.dumps(calculation_map)
             print(json_object)
 
             cycle = cycle_list[-i:]
